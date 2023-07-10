@@ -1,7 +1,7 @@
 pico-8 cartridge // http://www.pico-8.com
 version 41
 __lua__
--- main code
+-- main pico-8 code
 
 function _init()
  cls()
