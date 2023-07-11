@@ -1,10 +1,39 @@
 pico-8 cartridge // http://www.pico-8.com
 version 41
 __lua__
--- main pico-8 code
+-- main
 
 function _init()
- cls()
+ cls(0)
+ 
+ mode='over'
+ blink_time=1
+end
+
+function _update()
+ blink_time+=1
+
+ if mode=='start' then
+  update_start()
+ elseif mode =='game' then
+  update_game()
+ elseif mode=='over' then
+  update_over()
+ end
+end
+
+function _draw()
+ if mode=='start' then
+  draw_start()
+ elseif mode=='game' then
+  draw_game()
+ elseif mode=='over' then
+  draw_over()
+ end
+end
+
+function start_game()
+ mode='game'
  
  -- globals
  g_speed = 2
@@ -39,7 +68,10 @@ function _init()
  bombs = 2
 end
 
-function _update()
+-->8
+--update funcs
+
+function update_game()
  ship.x_speed = 0
  ship.y_speed = 0
  ship_spr = 2
@@ -64,7 +96,26 @@ function _update()
  end
 end
 
-function _draw()
+
+
+
+function update_start()
+ if btnp(4) or btnp(5) then
+  start_game()
+ end
+end
+
+
+
+function update_over()
+ if btnp(4) or btnp(5) then
+  mode='start'
+ end
+end
+-->8
+-- draw funcs
+
+function draw_game()
  cls(0)
  
  render_starfield()
@@ -114,6 +165,22 @@ end
 
 
 
+
+function draw_start()
+ cls(1)
+ 
+ print('most amazing shmup',27,40,12)
+ print('press any key to start',20,80,blink())
+end
+
+
+
+function draw_over()
+ cls(8)
+ 
+ print('game over',44,40,2)
+ print('press any key to continue',15,80,blink())
+end
 -->8
 -- private methods
 
@@ -213,6 +280,18 @@ function create_random_star(at_top)
   speed=spd,
   clr=clr,
  }
+end
+
+function blink()
+ local blink_anim={
+  5,5,5,5,6,6,7,7,6,6,5,5
+ }
+ 
+ if blink_time>count(blink_anim) then
+  blink_time=1 
+ end
+ 
+ return blink_anim[blink_time]
 end
 __gfx__
 00000000000330000003300000033000000000000000000000000000000000000000000000000000000000000880088008800880000000000000000000000000
