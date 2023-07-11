@@ -162,7 +162,7 @@ function draw_game()
     bullet.spr_id=bullet_spr
    end
    
-   spr(bullet.spr_id,bullet.x,bullet.y - 2)
+   draw_sprite(bullet)
   end
  end
  
@@ -174,7 +174,7 @@ function draw_game()
  
  -- render enemies
  for en in all(enemies) do
-  spr(en.spr_id,en.x,en.y)
+  draw_sprite(en)
  end
  
  -- ui
@@ -340,7 +340,7 @@ function blink()
 end
 
 function draw_sprite(sp)
- spr(sp.spr_id,sp.x,sp,y)
+ spr(sp.spr_id,sp.x,sp.y)
 end
 __gfx__
 00000000000330000003300000033000000000000000000000000000000000000000000000000000000000000880088008800880000000000000000000000000
