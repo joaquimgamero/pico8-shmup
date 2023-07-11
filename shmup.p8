@@ -6,6 +6,19 @@ __lua__
 function _init()
  cls(0)
  
+ -- globals
+ g_speed = 2
+ g_max_lives = 3
+ g_max_bombs = 3
+ g_num_stars = 100
+ g_space_speed = 2
+ 
+ -- generate stars db
+ stars = {}
+ for i=1,g_num_stars do
+  add(stars,create_random_star())
+ end
+ 
  mode='over'
  blink_time=1
 end
@@ -35,22 +48,10 @@ end
 function start_game()
  mode='game'
  
- -- globals
- g_speed = 2
- g_max_lives = 3
- g_max_bombs = 3
- g_num_stars = 100
- g_space_speed = 2
- 
  -- sprites
  ship_spr = 2
  thrust_spr = 4
  bullet_spr = 17
- stars = {}
- 
- for i=1,g_num_stars do
-  add(stars,create_random_star())
- end
  
  -- ship
  ship = {
@@ -100,6 +101,8 @@ end
 
 
 function update_start()
+ animate_starfield()
+ 
  if btnp(4) or btnp(5) then
   start_game()
  end
@@ -108,6 +111,8 @@ end
 
 
 function update_over()
+ animate_starfield()
+ 
  if btnp(4) or btnp(5) then
   mode='start'
  end
@@ -169,6 +174,7 @@ end
 function draw_start()
  cls(1)
  
+ render_starfield()
  print('most amazing shmup',27,40,12)
  print('press any key to start',20,80,blink())
 end
@@ -178,6 +184,7 @@ end
 function draw_over()
  cls(8)
  
+ render_starfield()
  print('game over',44,40,2)
  print('press any key to continue',15,80,blink())
 end
@@ -218,20 +225,20 @@ function listen_to_ship_controls()
  ship.y += ship.y_speed
  
  -- check if we hit the edge
- if ship.x > 127 then
-  ship.x = 0
+ if ship.x > 119 then
+  ship.x = 119
  end
  
  if ship.x < 0 then
-  ship.x = 127
+  ship.x = 0
  end
  
- if ship.y > 127 then
-  ship.y = 0
+ if ship.y > 119 then
+  ship.y = 119
  end
  
  if ship.y < 0 then
-  ship.y = 127
+  ship.y = 0
  end
 end
 
@@ -241,6 +248,11 @@ function render_starfield()
    line(star.x,star.y,star.x,star.y+1,6)
   else
    pset(star.x,star.y,star.clr)
+  end
+  
+  -- account for different modes
+  if (star.clr == 1) and mode ~= 'game' then
+   pset(star.x, star.y, 15)
   end
  end
 end
