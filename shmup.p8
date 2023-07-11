@@ -83,7 +83,7 @@ end
 function update_game()
  ship.x_speed = 0
  ship.y_speed = 0
- ship_spr = 2
+ ship.spr_id = 2
  
  listen_to_ship_controls()
  animate_starfield()
@@ -227,12 +227,12 @@ end
 function listen_to_ship_controls()
  if btn(0) then
   ship.x_speed = -g_speed
-  ship_spr = 1
+  ship.spr_id = 1
  end
  
  if btn(1) then
   ship.x_speed = g_speed
-  ship_spr = 3
+  ship.spr_id = 3
  end
  
  if btn(2) then
