@@ -59,6 +59,7 @@ function start_game()
   y = 64,
   x_speed = 0,
   y_speed = 0,
+  spr_id = ship_spr,
  }
  bullets = {}
  muzzle = 0
@@ -146,7 +147,7 @@ function draw_game()
  render_starfield()
  
  -- render ship
- spr(ship_spr,ship.x,ship.y)
+ draw_sprite(ship)
  
  -- render thrust
  spr(thrust_spr,ship.x,ship.y+8)
