@@ -60,7 +60,8 @@ function start_game()
   x_speed = 0,
   y_speed = 0,
   spr_id = ship_spr,
-  button_duration = 0,
+  move_left_dur = 0,
+  move_right_dur = 0,
  }
  bullets = {}
  muzzle = 0
@@ -144,7 +145,6 @@ end
 
 function draw_game()
  cls(0)
- print('left'..ship.button_duration,20,10,7)
  render_starfield()
  
  -- render ship
@@ -231,12 +231,12 @@ function listen_to_ship_controls()
     ship.x_speed = -g_speed
     ship.spr_id = ship_spr-1
 
-    if ship.button_duration < 10 then
-      ship.button_duration += 1
+    if ship.move_left_dur < 10 then
+      ship.move_left_dur += 1
     end
   else
-    if ship.button_duration > 0 then
-      ship.button_duration-=1
+    if ship.move_left_dur > 0 then
+      ship.move_left_dur-=1
     end
   end
    
@@ -244,29 +244,44 @@ function listen_to_ship_controls()
   if btn(1) then
     ship.x_speed = g_speed
     ship.spr_id = ship_spr+1
-    if ship.button_duration > 0 then
-      ship.button_duration-=1
+
+    if ship.move_right_dur < 10 then
+      ship.move_right_dur += 1
+    end
+  else
+    if ship.move_right_dur > 0 then
+      ship.move_right_dur-=1
     end
   end
   
   -- move up
   if btn(2) then
     ship.y_speed = -g_speed
-    if ship.button_duration > 0 then
-      ship.button_duration-=1
+    if ship.move_left_dur > 0 then
+      ship.move_left_dur-=1
+    end
+    if ship.move_right_dur > 0 then
+      ship.move_right_dur-=1
     end
   end
   
   --move down
   if btn(3) then
     ship.y_speed = g_speed
-    if ship.button_duration > 0 then
-      ship.button_duration-=1
+    if ship.move_left_dur > 0 then
+      ship.move_left_dur-=1
+    end
+    if ship.move_right_dur > 0 then
+      ship.move_right_dur-=1
     end
   end
 
-  if ship.button_duration >= 5 then
+  -- adapt ship sprite to movement
+  if ship.move_left_dur >= 5 then
     ship.spr_id-=1
+  end
+  if ship.move_right_dur >= 5 then
+    ship.spr_id+=1
   end
  
  -- shoot bullet
