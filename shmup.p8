@@ -378,7 +378,7 @@ end
 
 function blink()
  local blink_anim={
-  5,5,5,5,6,6,7,7,6,6,5,5
+  5,5,5,5,5,5,6,6,7,7,6,6
  }
  
  if blink_time>count(blink_anim) then
@@ -393,7 +393,9 @@ function draw_sprite(sp)
 end
 
 function collide(a,b)
+ -- math
  
+ return false
 end
 __gfx__
 00000000000030000003300000033000000330000003000000000000000000000000000000000000000000000880088008800880000000000000000000000000
