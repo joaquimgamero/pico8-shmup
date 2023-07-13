@@ -75,13 +75,13 @@ function start_game()
  bullets = {}
  muzzle = 0
  invul=0
+ bullet_t=0
  
  enemies = {}
- 
  spawn_enemy()
  
  -- counters
- score = 10000
+ score = 0
  lives = 3
  bombs = 2
 end
@@ -136,6 +136,7 @@ function update_game()
 		  del(bullets,bul)
 		  sfx(2)
 		  spawn_enemy()
+		  score+=10
 		 end
 		end
  end
@@ -330,16 +331,20 @@ function listen_to_ship_controls()
   end
  
  -- shoot bullet
- if btnp(5) then
-  local new_bullet = {
-   x = ship.x,
-   y = ship.y,
-   spr_id = bullet_spr,
-  }
-  add(bullets,new_bullet)
-  sfx(0)
-  muzzle = 5
+ if btn(5) then
+	 if bullet_t<=0 then
+	  local new_bullet = {
+	   x = ship.x,
+	   y = ship.y,
+	   spr_id = bullet_spr,
+	  }
+	  add(bullets,new_bullet)
+	  sfx(0)
+	  muzzle = 5
+	  bullet_t = 4
+  end
  end
+ bullet_t-=1
  
  ship.x += ship.x_speed
  ship.y += ship.y_speed
