@@ -1,7 +1,13 @@
 pico-8 cartridge // http://www.pico-8.com
 version 41
 __lua__
--- main
+--[[
+
+ todo:
+  - explosions
+  - impact fx
+
+--]]
 
 function _init()
  cls(0)
@@ -21,9 +27,11 @@ function _init()
  
  mode='start'
  blink_time=1
+ t=0
 end
 
 function _update()
+ t+=1
  blink_time+=1
 
  if mode=='start' then
@@ -47,6 +55,7 @@ end
 
 function start_game()
  mode='game'
+ t=0
  
  -- sprites
  ship_spr = 3
@@ -65,17 +74,15 @@ function start_game()
  }
  bullets = {}
  muzzle = 0
+ invul=0
+ 
  enemies = {}
  
- add(enemies,{
-  x=60,
-  y=10,
-  spr_id=33,
- })
+ spawn_enemy()
  
  -- counters
  score = 10000
- lives = 1
+ lives = 3
  bombs = 2
 end
 
@@ -117,6 +124,7 @@ function update_game()
   
   if en.y>128 then
    del(enemies,en)
+   spawn_enemy()
   end
  end
  
@@ -127,17 +135,22 @@ function update_game()
 		  del(enemies,en)
 		  del(bullets,bul)
 		  sfx(2)
+		  spawn_enemy()
 		 end
 		end
  end
  
  -- collision ship x enemies
- for en in all(enemies) do
-  if collide(ship,en) then
-   lives-=1
-   sfx(1)
-   del(enemies,en)
-  end
+ if invul==0 then
+	 for en in all(enemies) do
+	  if collide(ship,en) then
+	   lives-=1
+	   sfx(1)
+	   invul=60
+	  end
+	 end
+ else
+  invul-=1
  end
  
  -- monitor lives
@@ -174,10 +187,16 @@ function draw_game()
  render_starfield()
  
  -- render ship
- draw_sprite(ship)
- 
- -- render thrust
- spr(thrust_spr,ship.x,ship.y+8)
+	if invul<=0 then
+	 draw_sprite(ship)
+	 spr(thrust_spr,ship.x,ship.y+8)
+ else
+  -- invulnerable
+	 if sin(t/5)<0.1 then
+	  draw_sprite(ship)
+	  spr(thrust_spr,ship.x,ship.y+8)
+	 end
+ end
  
  -- render bullets
  for bullet in all(bullets) do
@@ -431,6 +450,14 @@ function collide(a,b)
  
  return true
 end
+
+function spawn_enemy()
+ add(enemies,{
+  x=rnd(120),
+  y=-8,
+  spr_id=33,
+ })
+end
 __gfx__
 00000000000030000003300000033000000330000003000000000000000000000000000000000000000000000880088008800880000000000000000000000000
 000000000003b300003bb300003bb300003bb300003b300000077000008778000007700000877800000770008778888280088002000000000000000000000000
@@ -599,4 +626,4 @@ __map__
 __sfx__
 0001000037550305502c5502855025550215501a55014550105500b55008550065500355002550035500055000550005500055000550055000450003500025000250002500015000050000500015000150000500
 000100001f65025640296402a63028620246201e6301c6101861017650126200e6200962002620006100060000600016000160001600016000160000600006000060000600006000060000600006000060000600
-0001000035750066502e5501d6300a6200452002520007200070000700116000d6000a6000860003600016001b60017600126000e600096000360004600076000160003600056000660006600006000060000600
+000100003c75006650377502b73025720105200f5200b520186500655001650196500265005650075100f650075100c6400455003610035500360010620055500363004500035000660006600006000060000600
