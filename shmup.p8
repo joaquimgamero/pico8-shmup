@@ -394,6 +394,13 @@ end
 
 function collide(a,b)
  -- math
+ local a_left=a.x
+ local a_top=a.y
+ 
+ 
+ local b_left=b.x
+ local b_top=b.y
+ 
  
  return false
 end
