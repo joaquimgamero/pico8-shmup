@@ -157,10 +157,18 @@ function update_game()
  for p in all(particles) do
   p.x+=p.speed_x
   p.y+=p.speed_y
+  
+  -- friction
+  p.speed_x=p.speed_x*0.85
+  p.speed_y=p.speed_y*0.85
+  
   p.age+=1
   
   if p.age>p.max_age then
-   del(particles,p)
+   p.size-=0.5
+   if p.size<0 then
+    del(particles,p)
+   end
   end
  end
  
@@ -257,11 +265,21 @@ function draw_game()
   
   if p.age>5 then
    p_color=10
-  elseif p.age>10 then
+  end
+  if p.age>7 then
    p_color=9
   end
+  if p.age>10 then
+   p_color=8
+  end
+  if p.age>12 then
+   p_color=2
+  end
+  if p.age>15 then
+   p_color=5
+  end
   
-  circfill(p.x,p.y,2,p_color)
+  circfill(p.x,p.y,p.size,p_color)
  end
  
  -- render enemies
@@ -529,10 +547,11 @@ function explode(x,y)
 	 local particle={
 	  x=x,
 	  y=y,
-	  speed_x=(rnd()-0.5)*3,
-	  speed_y=(rnd()-0.5)*3,
-	  max_age=30+rnd(30),
-	  age=0,
+	  speed_x=(rnd()-0.5)*7,
+	  speed_y=(rnd()-0.5)*7,
+	  max_age=10+rnd(10),
+	  age=rnd(2),
+	  size=rnd(4)+1,
 	 }
 	 add(particles,particle)
  end
