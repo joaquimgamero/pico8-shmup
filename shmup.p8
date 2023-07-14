@@ -224,9 +224,14 @@ function draw_game()
   circfill(ship.x+5,ship.y-2,muzzle,7)
  end
  
- -- explosions
+ -- render explosions
  for expl in all(explosions) do
-  spr(64,expl.x,expl.y,2,2)
+  spr(64,expl.x-4,expl.y-2,2,2)
+  expl.life-=1
+
+  if expl.life<=0 then
+   del(explosions,expl)
+  end
  end
  
  -- render enemies
@@ -487,6 +492,7 @@ function explode(x,y)
  local expl={
   x=x,
   y=y,
+  life=10,
  }
  
  add(explosions,expl)
