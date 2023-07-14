@@ -4,8 +4,8 @@ __lua__
 --[[
 
  todo:
-  - explosions
-  - impact fx
+  - procedural explosion
+  - bullet collision fx
 
 --]]
 
@@ -82,6 +82,8 @@ function start_game()
  
  explosions = {}
  
+ particles = {}
+ 
  -- counters
  score = 0
  lives = 3
@@ -149,6 +151,17 @@ function update_game()
 		  end
 		 end
 		end
+ end
+ 
+  -- update particles
+ for p in all(particles) do
+  p.x+=p.speed_x
+  p.y+=p.speed_y
+  p.age+=1
+  
+  if p.age>p.max_age then
+   del(particles,p)
+  end
  end
  
  -- collision ship x enemies
@@ -236,6 +249,19 @@ function draw_game()
   if expl.age>=#expl_frames then
    del(explosions,expl)
   end
+ end
+ 
+ -- render particles
+ for p in all(particles) do
+  local p_color=7
+  
+  if p.age>5 then
+   p_color=10
+  elseif p.age>10 then
+   p_color=9
+  end
+  
+  circfill(p.x,p.y,2,p_color)
  end
  
  -- render enemies
@@ -493,13 +519,23 @@ function spawn_enemy()
 end
 
 function explode(x,y)
- local expl={
-  x=x,
-  y=y,
-  age=1,
- }
- 
- add(explosions,expl)
+-- local expl={
+--  x=x,
+--  y=y,
+--  age=1,
+-- }
+-- add(explosions,expl)
+ for i=1,30 do
+	 local particle={
+	  x=x,
+	  y=y,
+	  speed_x=(rnd()-0.5)*3,
+	  speed_y=(rnd()-0.5)*3,
+	  max_age=30+rnd(30),
+	  age=0,
+	 }
+	 add(particles,particle)
+ end
 end
 __gfx__
 00000000000030000003300000033000000330000003000000000000000000000000000000000000000000000880088008800880000000000000000000000000
