@@ -245,20 +245,6 @@ function draw_game()
   circfill(ship.x+5,ship.y-2,muzzle,7)
  end
  
- -- render explosions
- local expl_frames={64,64,66,68,70,70,72,72}
- 
- for expl in all(explosions) do
-  local expl_spr=expl_frames[flr(expl.age)]
-  
-  spr(expl_spr,expl.x-4,expl.y-2,2,2)
-  expl.age+=0.5
-
-  if expl.age>=#expl_frames then
-   del(explosions,expl)
-  end
- end
- 
  -- render particles
  for p in all(particles) do
   local p_color=7
@@ -537,16 +523,22 @@ function spawn_enemy()
 end
 
 function explode(x,y)
--- local expl={
---  x=x,
---  y=y,
---  age=1,
--- }
--- add(explosions,expl)
+
+ local muzzle_expl={
+  x=x+4,
+  y=y+4,
+  speed_x=0,
+  speed_y=0,
+  max_age=0,
+  age=0,
+  size=10,
+ }
+ add(particles,muzzle_expl)
+ 
  for i=1,30 do
 	 local particle={
-	  x=x,
-	  y=y,
+	  x=x+4,
+	  y=y+4,
 	  speed_x=(rnd()-0.5)*7,
 	  speed_y=(rnd()-0.5)*7,
 	  max_age=10+rnd(10),
