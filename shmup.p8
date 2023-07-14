@@ -4,7 +4,8 @@ __lua__
 --[[
 
  todo:
-  - procedural explosion
+  - ship explosion
+  - sparks?
   - bullet collision fx
 
 --]]
