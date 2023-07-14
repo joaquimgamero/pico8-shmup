@@ -132,11 +132,16 @@ function update_game()
  for bul in all(bullets) do
 		for en in all(enemies) do
 		 if collide(bul,en) then
-		  del(enemies,en)
 		  del(bullets,bul)
-		  sfx(2)
-		  spawn_enemy()
-		  score+=10
+		  en.hp-=1
+		  
+		  if en.hp<=0 then
+		  	del(enemies,en)
+			  del(bullets,bul)
+			  sfx(2)
+			  spawn_enemy()
+			  score+=10
+		  end
 		 end
 		end
  end
@@ -461,6 +466,7 @@ function spawn_enemy()
   x=rnd(120),
   y=-8,
   spr_id=33,
+  hp=5,
  })
 end
 __gfx__
