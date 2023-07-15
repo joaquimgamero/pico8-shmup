@@ -85,6 +85,8 @@ function start_game()
  
  particles = {}
  
+ shockwaves = {}
+ 
  -- counters
  score = 0
  lives = 3
@@ -138,11 +140,15 @@ function update_game()
  for bul in all(bullets) do
 		for en in all(enemies) do
 		 if collide(bul,en) then
+		  -- hit
 		  sfx(3)
+		  small_shockwave(bul.x+4,bul.y+4)
+		  small_spark(bul.x+4,bul.y+4)
 		  del(bullets,bul)
 		  en.hp-=1
 		  en.flash=3
 		  
+		  -- dies
 		  if en.hp<=0 then
 			  sfx(2)
 			  spawn_enemy()
@@ -174,11 +180,19 @@ function update_game()
   end
  end
  
+ -- update shockwaves
+ for sw in all(shockwaves) do
+  sw.r+=sw.speed
+  if sw.r>sw.max_r then
+   del(shockwaves,sw)
+  end
+ end
+ 
  -- collision ship x enemies
  if invul==0 then
 	 for en in all(enemies) do
 	  if collide(ship,en) then
-			 explode(ship.x,ship.y)
+			 explode(ship.x,ship.y,'blue')
 	   lives-=1
 	   sfx(1)
 	   invul=60
@@ -251,9 +265,26 @@ function draw_game()
   circfill(ship.x+5,ship.y-2,muzzle,7)
  end
  
+ -- render shock waves
+ for sw in all(shockwaves) do
+  circ(sw.x,sw.y,sw.r,sw.clr)
+ end
+ 
  -- render particles
- for p in all(particles) do 
-  circfill(p.x,p.y,p.size,get_red_p_color(p))
+ for p in all(particles) do
+  local p_color=7
+  
+  if p.color_mode=='blue' then
+   p_color=get_blue_p_color(p)
+  else
+   p_color=get_red_p_color(p)
+  end
+  
+  if p.is_spark then
+   pset(p.x,p.y,7)
+  else
+   circfill(p.x,p.y,p.size,p_color)
+  end
  end
  
  -- render enemies
@@ -510,9 +541,10 @@ function spawn_enemy()
  })
 end
 
-function explode(x,y)
-
- local muzzle_expl={
+function explode(x,y,color_mode)
+ color_mode=color_mode or 'red'
+ 
+ add(particles,{
   x=x+4,
   y=y+4,
   speed_x=0,
@@ -520,21 +552,38 @@ function explode(x,y)
   max_age=0,
   age=0,
   size=10,
- }
- add(particles,muzzle_expl)
+ })
  
+ -- particles
  for i=1,30 do
-	 local particle={
+	 add(particles,{
 	  x=x+4,
 	  y=y+4,
+	  color_mode=color_mode,
 	  speed_x=(rnd()-0.5)*7,
 	  speed_y=(rnd()-0.5)*7,
 	  max_age=10+rnd(10),
 	  age=rnd(2),
 	  size=rnd(4)+1,
-	 }
-	 add(particles,particle)
+	 })
  end
+ 
+ -- sparks
+ for i=1,20 do
+	 add(particles,{
+	  x=x+4,
+	  y=y+4,
+	  color_mode=color_mode,
+	  speed_x=(rnd()-0.5)*12,
+	  speed_y=(rnd()-0.5)*12,
+	  max_age=10+rnd(10),
+	  age=rnd(2),
+	  size=rnd(4)+1,
+	  is_spark=true,
+	 })
+ end
+ 
+ big_shockwave(x,y)
 end
 
 function get_red_p_color(particle)
@@ -557,6 +606,68 @@ function get_red_p_color(particle)
 	end
 	
 	return p_color
+end
+
+function get_blue_p_color(particle)
+	local p_color=7
+	
+	if particle.age>5 then
+	 p_color=6
+	end
+	if particle.age>7 then
+	 p_color=12
+	end
+	if particle.age>10 then
+	 p_color=13
+	end
+	if particle.age>12 then
+	 p_color=1
+	end
+	if particle.age>15 then
+	 p_color=1
+	end
+	
+	return p_color
+end
+
+function small_shockwave(x,y,clr)
+ clr=clr or 12
+ 
+ add(shockwaves,{
+  x=x,
+  y=y,
+  r=3, -- radius
+  max_r=6,
+  clr=clr,
+  speed=1,
+ })
+end
+
+function big_shockwave(x,y,clr)
+ clr=clr or 7
+ 
+ add(shockwaves,{
+  x=x,
+  y=y,
+  r=3, -- radius
+  max_r=25,
+  clr=clr,
+  speed=3.5,
+ })
+end
+
+function small_spark(x,y)
+ add(particles,{
+  x=x+4,
+  y=y+4,
+  color_mode=color_mode,
+  speed_x=(rnd()-0.5)*8,
+  speed_y=(rnd()-1)*3,
+  max_age=10+rnd(10),
+  age=rnd(2),
+  size=rnd(2)+1,
+  is_spark=true,
+ })
 end
 __gfx__
 00000000000030000003300000033000000330000003000000000000000000000000000000000000000000000880088008800880000000000000000000000000
