@@ -192,7 +192,7 @@ function update_game()
  if invul==0 then
 	 for en in all(enemies) do
 	  if collide(ship,en) then
-			 explode(ship.x,ship.y,'blue')
+			 explode(ship.x,ship.y,'green')
 	   lives-=1
 	   sfx(1)
 	   invul=60
@@ -274,8 +274,8 @@ function draw_game()
  for p in all(particles) do
   local p_color=7
   
-  if p.color_mode=='blue' then
-   p_color=get_blue_p_color(p)
+  if p.color_mode=='green' then
+   p_color=get_green_p_color(p)
   else
    p_color=get_red_p_color(p)
   end
@@ -608,23 +608,23 @@ function get_red_p_color(particle)
 	return p_color
 end
 
-function get_blue_p_color(particle)
+function get_green_p_color(particle)
 	local p_color=7
 	
 	if particle.age>5 then
 	 p_color=6
 	end
 	if particle.age>7 then
-	 p_color=12
+	 p_color=11
 	end
 	if particle.age>10 then
-	 p_color=13
+	 p_color=11
 	end
 	if particle.age>12 then
-	 p_color=1
+	 p_color=3
 	end
 	if particle.age>15 then
-	 p_color=1
+	 p_color=3
 	end
 	
 	return p_color
