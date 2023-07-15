@@ -178,6 +178,7 @@ function update_game()
  if invul==0 then
 	 for en in all(enemies) do
 	  if collide(ship,en) then
+			 explode(ship.x,ship.y)
 	   lives-=1
 	   sfx(1)
 	   invul=60
@@ -251,26 +252,8 @@ function draw_game()
  end
  
  -- render particles
- for p in all(particles) do
-  local p_color=7
-  
-  if p.age>5 then
-   p_color=10
-  end
-  if p.age>7 then
-   p_color=9
-  end
-  if p.age>10 then
-   p_color=8
-  end
-  if p.age>12 then
-   p_color=2
-  end
-  if p.age>15 then
-   p_color=5
-  end
-  
-  circfill(p.x,p.y,p.size,p_color)
+ for p in all(particles) do 
+  circfill(p.x,p.y,p.size,get_red_p_color(p))
  end
  
  -- render enemies
@@ -552,6 +535,28 @@ function explode(x,y)
 	 }
 	 add(particles,particle)
  end
+end
+
+function get_red_p_color(particle)
+	local p_color=7
+	
+	if particle.age>5 then
+	 p_color=10
+	end
+	if particle.age>7 then
+	 p_color=9
+	end
+	if particle.age>10 then
+	 p_color=8
+	end
+	if particle.age>12 then
+	 p_color=2
+	end
+	if particle.age>15 then
+	 p_color=5
+	end
+	
+	return p_color
 end
 __gfx__
 00000000000030000003300000033000000330000003000000000000000000000000000000000000000000000880088008800880000000000000000000000000
