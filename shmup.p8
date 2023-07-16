@@ -4,9 +4,11 @@ __lua__
 --[[
 
  todo:
-  - ship explosion
-  - sparks?
-  - bullet collision fx
+  - game flow
+  - music
+  - multiple enemies
+  - big enemies
+  - enemy bullets
 
 --]]
 
@@ -60,7 +62,7 @@ function start_game()
  
  -- sprites
  ship_spr = 3
- thrust_spr = 6
+ thrust_spr = 6 
  bullet_spr = 17
  
  -- ship
