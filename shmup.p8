@@ -39,6 +39,8 @@ function _update()
 
  if mode=='start' then
   update_start()
+ elseif mode=='wave_text' then
+  update_wave_text()
  elseif mode =='game' then
   update_game()
  elseif mode=='over' then
@@ -49,6 +51,8 @@ end
 function _draw()
  if mode=='start' then
   draw_start()
+ elseif mode=='wave_text' then
+  draw_wave_text()
  elseif mode=='game' then
   draw_game()
  elseif mode=='over' then
@@ -57,8 +61,10 @@ function _draw()
 end
 
 function start_game()
- mode='game'
+ mode='wave_text'
  t=0
+ wave=1
+ wave_text_time=80
  
  -- sprites
  ship_spr = 3
@@ -222,6 +228,15 @@ function update_start()
 end
 
 
+function update_wave_text()
+ update_game()
+ wave_text_time-=1
+ 
+ if wave_text_time<=0 then
+  mode='game'
+ end
+end
+
 
 function update_over()
  animate_starfield()
@@ -334,6 +349,13 @@ function draw_start()
  render_starfield()
  print('most amazing shmup',27,40,12)
  print('press any key to start',20,80,blink())
+end
+
+
+
+function draw_wave_text()
+ draw_game()
+ print('wave '..wave,56,40,blink())
 end
 
 
