@@ -87,7 +87,6 @@ function start_game()
  bullet_t=0
  
  enemies = {}
- spawn_enemy()
  
  explosions = {}
  
@@ -98,7 +97,6 @@ function start_game()
  -- counters
  score = 0
  lives = 3
- bombs = 2
 end
 
 -->8
@@ -327,15 +325,6 @@ function draw_game()
    spr(11,(i * 9)-9)
  	else
    spr(12,(i * 9)-9)
- 	end
- end
- 
- -- bombs
- for i = 1,g_max_bombs do
- 	if bombs >= i then
-   spr(27,130-(i * 9))
- 	else
-   spr(28,130-(i * 9))
  	end
  end
 end
