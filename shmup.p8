@@ -22,6 +22,7 @@ function _init()
  g_max_lives = 3
  g_max_bombs = 3
  g_num_stars = 100
+ g_wave_duration = 80
  
  -- generate stars db
  stars = {}
@@ -46,6 +47,8 @@ function _update()
   update_game()
  elseif mode=='over' then
   update_over()
+ elseif mode=='win' then
+  update_win()
  end
 end
 
@@ -58,14 +61,15 @@ function _draw()
   draw_game()
  elseif mode=='over' then
   draw_over()
+ elseif mode=='win' then
+  draw_win()
  end
 end
 
 function start_game()
  mode='wave_text'
  t=0
- wave=1
- wave_text_time=80
+ wave=0
  
  -- sprites
  ship_spr = 3
@@ -87,17 +91,19 @@ function start_game()
  invul=0
  bullet_t=0
  
- enemies = {}
- 
+ enemies =    {}
  explosions = {}
- 
- particles = {}
- 
+ particles =  {}
  shockwaves = {}
  
  -- counters
  score = 0
  lives = 3
+ 
+ -- 
+ -- start
+ --
+ next_wave()
 end
 
 -->8
@@ -158,11 +164,14 @@ function update_game()
 		  -- dies
 		  if en.hp<=0 then
 			  sfx(2)
-			  spawn_enemy()
 			  explode(en.x,en.y)
 			  score+=10
 		  	del(enemies,en)
-			  del(bullets,bul)
+		  	
+		  	-- if no more enemies
+		  	if #enemies==0 then
+		  	 next_wave()
+		  	end
 		  end
 		 end
 		end
@@ -241,8 +250,31 @@ end
 function update_over()
  animate_starfield()
  
- if btnp(4) or btnp(5) then
-  mode='start'
+ if btn(4)==false and btn(5)==false then
+  button_released=true
+ end
+ 
+ if (button_released) then
+  if btnp(4) or btnp(5) then
+	  mode='start'
+	  button_released=false
+	 end
+ end
+end
+
+
+function update_win()
+ animate_starfield()
+ 
+ if btn(4)==false and btn(5)==false then
+  button_released=true
+ end
+ 
+ if (button_released) then
+  if btnp(4) or btnp(5) then
+	  mode='start'
+	  button_released=false
+	 end
  end
 end
 -->8
@@ -358,6 +390,15 @@ function draw_over()
  print('game over',44,40,2)
  print('press any key to continue',15,80,blink())
 end
+
+
+
+function draw_win()
+ cls(11)
+ 
+ render_starfield()
+ print('congrats!',40,40,2)
+end
 -->8
 -- private methods
 
@@ -463,11 +504,6 @@ function render_starfield()
    line(star.x,star.y,star.x,star.y+1,6)
   else
    pset(star.x,star.y,star.clr)
-  end
-  
-  -- account for different modes
-  if (star.clr == 1) and mode ~= 'game' then
-   pset(star.x, star.y, 15)
   end
  end
 end
@@ -689,6 +725,18 @@ end
 
 function spawn_wave()
  spawn_enemy()
+end
+
+function next_wave()
+ wave+=1
+
+ 
+ if wave==4 then
+  mode='win'
+ else
+  mode='wave_text'
+  wave_text_time=g_wave_duration
+ end
 end
 __gfx__
 00000000000030000003300000033000000330000003000000000000000000000000000000000000000000000880088008800880000000000000000000000000
