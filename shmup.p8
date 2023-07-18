@@ -9,6 +9,8 @@ __lua__
   - multiple enemies
   - big enemies
   - enemy bullets
+  - separate enemies and
+    waves methods into new tab
 
 --]]
 
@@ -20,7 +22,6 @@ function _init()
  g_max_lives = 3
  g_max_bombs = 3
  g_num_stars = 100
- g_space_speed = 2
  
  -- generate stars db
  stars = {}
@@ -232,6 +233,7 @@ function update_wave_text()
  
  if wave_text_time<=0 then
   mode='game'
+  spawn_wave()
  end
 end
 
@@ -681,6 +683,12 @@ function small_spark(x,y)
   size=rnd(2)+1,
   is_spark=true,
  })
+end
+-->8
+-- waves and enemies
+
+function spawn_wave()
+ spawn_enemy()
 end
 __gfx__
 00000000000030000003300000033000000330000003000000000000000000000000000000000000000000000880088008800880000000000000000000000000
