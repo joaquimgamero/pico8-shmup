@@ -4,13 +4,15 @@ __lua__
 --[[
 
  todo:
-  - game flow
+	 - nicer screens
+  - separate enemies and
+    waves methods into new tab
+    
+  - wave logic
   - music
   - multiple enemies
   - big enemies
   - enemy bullets
-  - separate enemies and
-    waves methods into new tab
 
 --]]
 
