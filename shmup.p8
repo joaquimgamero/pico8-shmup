@@ -5,14 +5,14 @@ __lua__
 
  todo:
 	 - nicer screens
-  - separate enemies and
-    waves methods into new tab
-    
+  - size adaptative
+    collision detection
   - wave logic
-  - better music integration
-  - multiple enemies
-  - big enemies
+  - winning music
+  - where do enemies spawn?
   - enemy bullets
+  - enemy behavior
+  - enemy types (more)
 
 --]]
 
@@ -765,7 +765,7 @@ end
   new_enemy.anim={37,38,39,40}
  -- boss
  elseif en_type==4 then
-  new_enemy.hp=100
+  new_enemy.hp=15
   new_enemy.anim={96,98}
   new_enemy.spr_w=2
   new_enemy.spr_h=2
