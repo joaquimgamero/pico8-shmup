@@ -21,10 +21,13 @@ function _init()
  
  -- globals
  g_speed = 2
- g_max_lives = 3
+ g_max_lives = 1
  g_max_bombs = 3
  g_num_stars = 100
  g_wave_duration = 80
+ 
+ blink_time=1
+ t=0
  
  -- generate stars db
  stars = {}
@@ -32,9 +35,7 @@ function _init()
   add(stars,create_random_star())
  end
  
- mode='start'
- blink_time=1
- t=0
+ goto_start_screen()
 end
 
 function _update()
@@ -69,6 +70,7 @@ function _draw()
 end
 
 function start_game()
+ music(-1,1000)
  mode='wave_text'
  t=0
  wave=0
@@ -100,12 +102,18 @@ function start_game()
  
  -- counters
  score = 0
- lives = 3
+ lives = g_max_lives
  
  -- 
  -- start
  --
  next_wave()
+end
+
+
+function goto_start_screen()
+ mode='start'
+ music(1)
 end
 
 -->8
@@ -179,24 +187,8 @@ function update_game()
 		end
  end
  
-  -- update particles
- for p in all(particles) do
-  p.x+=p.speed_x
-  p.y+=p.speed_y
-  
-  -- friction
-  p.speed_x=p.speed_x*0.85
-  p.speed_y=p.speed_y*0.85
-  
-  p.age+=1
-  
-  if p.age>p.max_age then
-   p.size-=0.5
-   if p.size<0 then
-    del(particles,p)
-   end
-  end
- end
+ -- update particles
+ animate_particles()
  
  -- update shockwaves
  for sw in all(shockwaves) do
@@ -222,6 +214,10 @@ function update_game()
  
  -- monitor lives
  if lives<=0 then
+  -- otherwise a shockwave
+  -- is frozen in screen
+  shockwaves={}
+  
   mode='over'
   music(0)
   return
@@ -252,6 +248,7 @@ end
 
 function update_over()
  animate_starfield()
+ animate_particles()
  
  if btn(4)==false and btn(5)==false then
   button_released=true
@@ -259,7 +256,7 @@ function update_over()
  
  if (button_released) then
   if btnp(4) or btnp(5) then
-	  mode='start'
+	  goto_start_screen()
 	  button_released=false
 	 end
  end
@@ -280,6 +277,7 @@ function update_win()
 	 end
  end
 end
+
 -->8
 -- draw funcs
 
@@ -288,14 +286,16 @@ function draw_game()
  render_starfield()
  
  -- render ship
-	if invul<=0 then
-	 draw_sprite(ship)
-	 spr(thrust_spr,ship.x,ship.y+8)
- else
-  -- invulnerable
-	 if sin(t/5)<0.1 then
-	  draw_sprite(ship)
-	  spr(thrust_spr,ship.x,ship.y+8)
+ if lives>0 then
+ 	if invul<=0 then
+		 draw_sprite(ship)
+		 spr(thrust_spr,ship.x,ship.y+8)
+	 else
+	  -- invulnerable
+		 if sin(t/5)<0.1 then
+		  draw_sprite(ship)
+		  spr(thrust_spr,ship.x,ship.y+8)
+		 end
 	 end
  end
  
@@ -387,20 +387,19 @@ end
 
 
 function draw_over()
- cls(8)
- 
- render_starfield()
- print('game over',44,40,2)
+ draw_game()
+
+ print('game over',45,40,8)
  print('press any key to continue',15,80,blink())
 end
 
 
 
 function draw_win()
- cls(11)
+ draw_game()
  
  render_starfield()
- print('congrats!',40,40,2)
+ print('congrats!',45,40,11)
 end
 -->8
 -- private methods
@@ -519,6 +518,26 @@ function animate_starfield()
    add(stars,create_random_star(true))
   end
   star.y += star.speed
+ end
+end
+
+function animate_particles()
+	 for p in all(particles) do
+  p.x+=p.speed_x
+  p.y+=p.speed_y
+  
+  -- friction
+  p.speed_x=p.speed_x*0.85
+  p.speed_y=p.speed_y*0.85
+  
+  p.age+=1
+  
+  if p.age>p.max_age then
+   p.size-=0.5
+   if p.size<0 then
+    del(particles,p)
+   end
+  end
  end
 end
 
@@ -723,6 +742,7 @@ function small_spark(x,y)
   is_spark=true,
  })
 end
+
 -->8
 -- waves and enemies
 
@@ -945,6 +965,11 @@ __sfx__
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 011000001d0501f0501f0501305013050160501b0501b05011050160501d0502405027050290502905027050240501f050160501d0501d0500f0500f050180501b0501805013050130500f0500f0500f0500f050
 01100000035500050000500005000a550005000050000500005500050000500005000f550005000050000500165500050000500005000c5501155000500005000755000500005000050003550005000050000500
+001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00100000000001b7501f7502275000000000001b75000000187501b7501f7500000022750000001b75000000187501b7501f7500000000000000001b7501675000000000001f7501675011750117501175011750
 __music__
-00 14154344
+04 14154344
+00 19424344
 
