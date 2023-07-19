@@ -786,7 +786,7 @@ function next_wave()
  wave+=1
 
  
- if wave==4 then
+ if wave==5 then
   mode='win'
  else
   mode='wave_text'
