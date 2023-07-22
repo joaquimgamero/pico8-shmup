@@ -146,14 +146,17 @@ function update_game()
  
  -- move the enemies
  for en in all(enemies) do
-  en.anim_fr+=0.4
+  enemy_do(en)
   
+  -- animation
+  en.anim_fr+=0.4
   if flr(en.anim_fr) > #en.anim then
   	en.anim_fr=1
   end
   
   en.spr_id=en.anim[flr(en.anim_fr)]
   
+  -- enemy leaving screen
   if en.y>128 then
    del(enemies,en)
    spawn_enemy()
@@ -745,9 +748,12 @@ end
  
  local new_enemy={
   x=x,
-  y=y,
+  y=y-66, --spawns offscreen
+  target_x=x,
+  target_y=y,
   flash=0,
   anim_fr=1,
+  mission='flyin'
  }
  
  -- oneeye
@@ -835,6 +841,27 @@ function place_enemies(lvl)
  	 end
 	 end
  end
+end
+-->8
+-- enemy behaviour
+
+function enemy_do(en)
+	if en.mission=='flyin' then
+		-- flying in
+		en.y+=1
+		
+		if en.y>=en.target_y then
+			en.mission='protect'
+		end
+		
+	elseif en.mission=='protect' then
+		-- staying put
+		
+	
+	elseif en.mission=='attack' then
+		-- attack
+		
+	end
 end
 __gfx__
 00000000000030000003300000033000000330000003000000000000000000000000000000000000000000000880088008800880000000000000000000000000
