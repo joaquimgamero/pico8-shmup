@@ -738,7 +738,7 @@ end
 -->8
 -- waves and enemies
 
- function spawn_enemy(en_type,x,y)
+ function spawn_enemy(en_type,x,y,wait_t)
  en_type=en_type or 1
  
  local new_enemy={
@@ -748,7 +748,8 @@ end
   target_y=y,
   flash=0,
   anim_fr=1,
-  mission='flyin'
+  mission='flyin',
+  wait=wait_t,
  }
  
  -- oneeye
@@ -831,8 +832,9 @@ function place_enemies(lvl)
  	 if e_type!=0 then
  	  local x_pos=x*(8+col_gap)-6
  	  local y_pos=y*row_gap
- 	 
-		  spawn_enemy(e_type,x_pos,y_pos)
+ 	  local wait_t=x*5
+ 	  
+		  spawn_enemy(e_type,x_pos,y_pos,wait_t)
  	 end
 	 end
  end
@@ -841,9 +843,14 @@ end
 -- enemy behaviour
 
 function enemy_do(en)
+ if en.wait>0 then
+ 	en.wait-=1
+ 	return
+ end
+
 	if en.mission=='flyin' then
 		-- flying in
-		en.y+=1
+		en.y+=3
 		
 		if en.y>=en.target_y then
 			en.mission='protect'
