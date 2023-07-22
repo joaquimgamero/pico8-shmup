@@ -5,14 +5,9 @@ __lua__
 
  todo:
 	 - nicer screens
-  - size adaptative
-    collision detection
-  - wave logic
   - winning music
-  - where do enemies spawn?
   - enemy bullets
   - enemy behavior
-  - enemy types (more)
 
 --]]
 
