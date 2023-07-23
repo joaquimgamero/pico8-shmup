@@ -850,7 +850,8 @@ function enemy_do(en)
 
 	if en.mission=='flyin' then
 		-- flying in
-		en.y+=3
+		-- w linear easing function
+		en.y+=(en.target_y-en.y)/10
 		
 		if en.y>=en.target_y then
 			en.mission='protect'
