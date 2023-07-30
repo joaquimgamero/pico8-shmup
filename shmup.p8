@@ -220,6 +220,10 @@ function update_game()
   music(0)
   return
  end
+ 
+ -- pick attacker
+ pick_attacker()
+ 
 end
 
 
@@ -862,12 +866,28 @@ function enemy_do(en)
 		
 	elseif en.mission=='protect' then
 		-- staying put
-		
 	
 	elseif en.mission=='attack' then
 		-- attack
+		en.y+=1.7
 		
 	end
+end
+
+function pick_attacker()
+ if mode!='game' then
+ 	return
+ end
+ 
+	-- 1 attacker every 2 seconds
+	if t%60==0 then
+		local en=rnd(enemies)
+		
+		if en.mission=='protect' then
+			en.mission='attack'
+		end
+	end
+
 end
 __gfx__
 00000000000030000003300000033000000330000003000000000000000000000000000000000000000000000880088008800880000000000000000000000000
