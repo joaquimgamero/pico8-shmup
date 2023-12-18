@@ -742,7 +742,7 @@ end
 -->8
 -- waves and enemies
 
- function spawn_enemy(en_type,x,y,wait_t)
+function spawn_enemy(en_type,x,y,wait_t)
  en_type=en_type or 1
  
  local new_enemy={
@@ -755,6 +755,7 @@ end
   anim_fr=1,
   mission='flyin',
   wait=wait_t,
+  en_type=en_type,
  }
  
  -- oneeye
@@ -784,7 +785,7 @@ function spawn_wave()
 	sfx(28)
 	
  if wave==1 then
-  attack_freq=20
+  attack_freq=60
   place_enemies({
    {0,1,1,1,1,1,1,1,1,0},
    {0,1,1,1,1,1,1,1,1,0},
@@ -874,8 +875,27 @@ function enemy_do(en)
 	
 	elseif en.mission=='attack' then
 		-- attack
-		en.y+=1.7
-		
+		if en.en_type==1 then
+		 -- oneeye
+		 en.dy=1.7
+		 en.dx=sin(t/50)
+		elseif en.en_type==2 then
+		 -- octopus
+		elseif en.en_type==3 then
+		 -- bat
+		elseif en.en_type==4 then
+		 -- boss
+		end
+		 
+	 -- always move towards centre
+	 if en.x<32 then
+	 	en.dx+=1-(en.x/32)
+  end
+	 if en.x>88 then
+	 	en.dx-=(en.x-88)/32
+  end
+	
+		move(en)
 	end
 end
 
@@ -899,6 +919,10 @@ function pick_attacker()
 	end
 end
 
+function move(obj)
+	obj.x+=obj.dx
+	obj.y+=obj.dy
+end
 __gfx__
 00000000000030000003300000033000000330000003000000000000000000000000000000000000000000000880088008800880000000000000000000000000
 000000000003b300003bb300003bb300003bb300003b300000077000008778000007700000877800000770008778888280088002000000000000000000000000
