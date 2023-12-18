@@ -69,6 +69,7 @@ function start_game()
  mode='wave_text'
  t=0
  wave=0
+ attack_freq=60
  
  -- sprites
  ship_spr = 3
@@ -781,7 +782,9 @@ end
 
 function spawn_wave()
 	sfx(28)
+	
  if wave==1 then
+  attack_freq=20
   place_enemies({
    {0,1,1,1,1,1,1,1,1,0},
    {0,1,1,1,1,1,1,1,1,0},
@@ -789,6 +792,7 @@ function spawn_wave()
    {0,1,1,1,1,1,1,1,1,0},
   })
  elseif wave==2 then
+  attack_freq=60
   place_enemies({
    {1,1,2,2,1,1,2,2,1,1},
    {1,1,2,2,1,1,2,2,1,1},
@@ -796,6 +800,7 @@ function spawn_wave()
    {1,1,2,2,1,1,2,2,1,1},
   })
  elseif wave==3 then
+  attack_freq=60
   place_enemies({
    {2,0,3,3,2,2,3,3,0,2},
    {3,1,2,2,1,1,2,2,1,3},
@@ -880,15 +885,20 @@ function pick_attacker()
  end
  
 	-- 1 attacker every 2 seconds
-	if t%60==0 then
-		local en=rnd(enemies)
+	if t%attack_freq==0 then
+	 -- random inside 10 enemies @ front
+	 local maxnum=min(10,#enemies)
+	 local i=flr(rnd(maxnum))
+	 i=#enemies-i
+	 
+		local en=enemies[i]
 		
 		if en.mission=='protect' then
 			en.mission='attack'
 		end
 	end
-
 end
+
 __gfx__
 00000000000030000003300000033000000330000003000000000000000000000000000000000000000000000880088008800880000000000000000000000000
 000000000003b300003bb300003bb300003bb300003b300000077000008778000007700000877800000770008778888280088002000000000000000000000000
