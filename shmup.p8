@@ -223,8 +223,7 @@ function update_game()
  end
  
  -- pick attacker
- pick_attacker()
- 
+ queue_attacker_pick()
 end
 
 
@@ -936,27 +935,30 @@ function enemy_do(en)
 	end
 end
 
+function queue_attacker_pick()
+  if mode!='game' then
+    return
+  end
+
+  if t%attack_freq==0 then
+    pick_attacker()
+  end
+end
+
 function pick_attacker()
- if mode!='game' then
- 	return
- end
- 
-	-- 1 attacker every 2 seconds
-	if t%attack_freq==0 then
-	 -- random inside 10 enemies @ front
-	 local maxnum=min(10,#enemies)
-	 local i=flr(rnd(maxnum))
-	 i=#enemies-i
-	 
-		local en=enemies[i]
-		
-		if en.mission=='protect' then
-			en.mission='attack'
-			en.anim_spd*=4
-			en.wait=60
-			en.shake=60
-		end
-	end
+  -- random inside 10 enemies @ front
+  local maxnum=min(10,#enemies)
+  local i=flr(rnd(maxnum))
+  i=#enemies-i
+  
+  local en=enemies[i]
+  
+  if en and en.mission=='protect' then
+    en.mission='attack'
+    en.anim_spd*=4
+    en.wait=60
+    en.shake=60
+  end
 end
 
 function move(obj)
@@ -969,6 +971,10 @@ function kill_enemy(en)
  explode(en.x,en.y)
  score+=10
 	del(enemies,en)
+
+ if en.mission=='attack' then
+  pick_attacker()
+ end
 end
 __gfx__
 00000000000030000003300000033000000330000003000000000000000000000000000000000000000000000880088008800880000000000000000000000000
