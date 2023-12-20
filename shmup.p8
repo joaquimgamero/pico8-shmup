@@ -175,10 +175,7 @@ function update_game()
 		  
 		  -- dies
 		  if en.hp<=0 then
-			  sfx(2)
-			  explode(en.x,en.y)
-			  score+=10
-		  	del(enemies,en)
+        kill_enemy(en)
 		  	
 		  	-- if no more enemies
 		  	if #enemies==0 then
@@ -965,6 +962,13 @@ end
 function move(obj)
 	obj.x+=obj.dx
 	obj.y+=obj.dy
+end
+
+function kill_enemy(en)
+ sfx(2)
+ explode(en.x,en.y)
+ score+=10
+	del(enemies,en)
 end
 __gfx__
 00000000000030000003300000033000000330000003000000000000000000000000000000000000000000000880088008800880000000000000000000000000
