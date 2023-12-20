@@ -65,7 +65,8 @@ function _draw()
 end
 
 function start_game()
- music(2)
+ -- todo: reactivate music
+ -- music(2)
  mode='wave_text'
  t=0
  wave=0
@@ -415,8 +416,10 @@ function draw_sprite(sp)
  local spry=sp.y
  
  if sp.shake and sp.shake>0 then
- 	sp.shake-=1
- 	sprx+=abs(sin(t/2.5))
+ 	sp.shake-=1	
+  if t%4<2 then
+  	sprx+=1
+  end
  end
  
  spr(sp.spr_id,sprx,spry,width,height)
@@ -1218,6 +1221,6 @@ __sfx__
 011000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __music__
 04 14154344
-00 19424344
+04 19424344
 03 16174344
 
