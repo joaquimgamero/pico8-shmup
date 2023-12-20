@@ -2,7 +2,7 @@
 
 ## Roadmap
 
-- [ ] 22 Enemy attacks
+- [x] 22 Enemy attacks
 - [ ] 23 Enemy bullets
 - [ ] 24 Spread shots
 - [ ] 25 Aimed shots

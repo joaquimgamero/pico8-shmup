@@ -4,7 +4,7 @@ __lua__
 --[[
 
  todo:
-	 - nicer screens
+	- nicer screens
   - winning music
   - enemy bullets
   - enemy behavior
@@ -145,7 +145,7 @@ function update_game()
   enemy_do(en)
   
   -- animation
-  en.anim_fr+=0.4
+  en.anim_fr+=en.anim_spd
   if flr(en.anim_fr) > #en.anim then
   	en.anim_fr=1
   end
@@ -153,8 +153,10 @@ function update_game()
   en.spr_id=en.anim[flr(en.anim_fr)]
   
   -- enemy leaving screen
-  if en.y>128 then
-   del(enemies,en)
+  if en.mission!='flyin' then
+  	if en.y>128 or en.x<-8 or en.x>128 then
+    del(enemies,en)
+   end
   end
  end
  
@@ -404,6 +406,21 @@ function draw_win()
  render_starfield()
  print('congrats!',45,40,11)
 end
+
+
+function draw_sprite(sp)
+ local width=sp.spr_w or 1
+ local height=sp.spr_h or 1
+ local sprx=sp.x
+ local spry=sp.y
+ 
+ if sp.shake and sp.shake>0 then
+ 	sp.shake-=1
+ 	sprx+=abs(sin(t/2.5))
+ end
+ 
+ spr(sp.spr_id,sprx,spry,width,height)
+end
 -->8
 -- private methods
 
@@ -582,12 +599,6 @@ function blink()
  return blink_anim[blink_time]
 end
 
-function draw_sprite(sp)
- local width=sp.spr_w or 1
- local height=sp.spr_h or 1
- spr(sp.spr_id,sp.x,sp.y,width,height)
-end
-
 function collide(a,b)
  -- math
  local a_left=a.x
@@ -749,10 +760,14 @@ function spawn_enemy(en_type,x,y,wait_t)
   --spawns offscreen
   x=x*1.25-16,
   y=y-66,
+  dx=0,
+  dy=0,
   target_x=x,
   target_y=y,
   flash=0,
+  shake=0,
   anim_fr=1,
+  anim_spd=0.4,
   mission='flyin',
   wait=wait_t,
   en_type=en_type,
@@ -788,8 +803,8 @@ function spawn_wave()
   attack_freq=60
   place_enemies({
    {0,1,1,1,1,1,1,1,1,0},
-   {0,1,1,1,1,1,1,1,1,0},
-   {0,1,1,1,1,1,1,1,1,0},
+   {1,1,1,1,1,1,1,1,1,1},
+   {1,1,1,1,1,1,1,1,1,1},
    {0,1,1,1,1,1,1,1,1,0},
   })
  elseif wave==2 then
@@ -803,10 +818,10 @@ function spawn_wave()
  elseif wave==3 then
   attack_freq=60
   place_enemies({
-   {2,0,3,3,2,2,3,3,0,2},
+   {2,1,3,3,2,2,3,3,1,2},
    {3,1,2,2,1,1,2,2,1,3},
    {3,1,2,2,1,1,2,2,1,3},
-   {2,0,3,3,2,2,3,3,0,2},
+   {2,1,3,3,2,2,3,3,1,2},
   })
  elseif wave==4 then
   place_enemies({
@@ -878,22 +893,44 @@ function enemy_do(en)
 		if en.en_type==1 then
 		 -- oneeye
 		 en.dy=1.7
-		 en.dx=sin(t/50)
+		 en.dx=sin(t/45)
 		elseif en.en_type==2 then
 		 -- octopus
+		 en.dy=2.5
+		 en.dx=sin(t/20)
 		elseif en.en_type==3 then
 		 -- bat
+		 
+		 if en.dx==0 then
+		 	-- flying down
+		 	en.dy=2
+		 	
+		 	if ship.y<=en.y then
+		 	 en.dy=0
+		 		if ship.x<en.x then
+		 			en.dx=-2
+					else
+						en.dx=2
+					end
+				end 	
+   end
 		elseif en.en_type==4 then
 		 -- boss
+		 en.dy=0.35
+		 if en.y>110 then
+		 	en.dy=1
+   end
 		end
 		 
-	 -- always move towards centre
-	 if en.x<32 then
-	 	en.dx+=1-(en.x/32)
-  end
-	 if en.x>88 then
-	 	en.dx-=(en.x-88)/32
-  end
+	 -- move towards centre
+	 if en.en_type<=2 then
+	 	if en.x<32 then
+		 	en.dx+=1-(en.x/32)
+	  end
+		 if en.x>88 then
+		 	en.dx-=(en.x-88)/32
+	  end
+	 end
 	
 		move(en)
 	end
@@ -915,6 +952,9 @@ function pick_attacker()
 		
 		if en.mission=='protect' then
 			en.mission='attack'
+			en.anim_spd*=4
+			en.wait=60
+			en.shake=60
 		end
 	end
 end
@@ -1149,7 +1189,7 @@ __sfx__
 00100000000001b7501f7502275000000000001b75000000187501b7501f7500000022750000001b75000000187501b7501f7500000000000000001b7501675000000000001f7501675011750117501175011750
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-000400003e7503c7503a750387503675033750317502e7502d7502b7502975027750257502375022750207501f7501e7401c7401a73018730167301572013720117200f7200c7100a71008710067100471000710
+000500003e7503c7503a750387503675033750317502e7502d7502b7502975027750257502375022750207501f7501e7401c7401a73018730167301572013720117200f7200c7100a71008710067100471000710
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
